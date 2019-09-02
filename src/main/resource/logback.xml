@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 尽量别用绝对路径，如果带参数不同容器路径解释可能不同,以下配置参数在pom.xml里 -->
+    <!--<property name="log.root.level" value="DEBUG" />  日志级别 -->
+    <!--<property name="log.other.level" value="ERROR" />  其他日志级别 -->
+    <property name="log.base" value="/local/logs" /> <!-- 日志路径，这里是相对路径，web项目eclipse下会输出到eclipse的安装目录下，如果部署到linux上的tomcat下，会输出到tomcat/bin目录 下 -->
+    <!--<property name="log.moduleName" value="dubbo-provider" />   模块名称， 影响日志配置名，日志文件名 -->
+    <property name="log.max.size" value="20MB" /> <!-- 日志文件大小 -->
+
+    <!--控制台输出 -->
+    <appender name="CONSOLE-LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- 日志文件输出 -->
+    <!--<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        &lt;!&ndash;<File>${log.base}/${log.moduleName}.log</File> 设置日志不超过${log.max.size}时的保存路径，注意如果 是web项目会保存到Tomcat的bin目录 下 &ndash;&gt;
+        &lt;!&ndash; 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。&ndash;&gt;
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/archive/${log.moduleName}_all_%d{yyyy-MM-dd}.%i.log.zip
+            </FileNamePattern>
+            &lt;!&ndash; 当天的日志大小 超过${log.max.size}时,压缩日志并保存 &ndash;&gt;
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log.max.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        &lt;!&ndash; 日志输出的文件的格式  &ndash;&gt;
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</pattern>
+        </layout>
+    </appender>-->
+    <!-- 获取比info级别高，包括info级别，除error级别的日志 -->
+    <appender name="INFO-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismath>ACCEPT</onMismath>
+        </filter>
+        <encoder>
+            <Pattern>[%d{yyyy-MM-dd' 'HH:mm:ss.sss}] [%c] [%t] [%L] [%-5p] %m%n</Pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+       如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+       的日志改名为今天的日期。即，<File> 的日志都是当天的。
+       -->
+        <!-- <File>${log.base}/archive/info//%d.log</File> 设置日志不超过${log.max.size}时的保存路径，注意如果 是web项目会保存到Tomcat的bin目录 下 -->
+        <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/archive/info//%d.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- 当天的日志大小 超过${log.max.size}时,压缩日志并保存
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log.max.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            -->
+        </rollingPolicy>
+        <!-- 日志输出的文件的格式
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</pattern>
+        </layout>
+        -->
+    </appender>
+
+    <appender name="ERROR-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <Pattern>[%d{yyyy-MM-dd' 'HH:mm:ss.sss}] [%c] [%t] [%L] [%-5p] %m%n</Pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+        <!--<File>${log.base}/archive/error//%d.log</File>  设置日志不超过${log.max.size}时的保存路径，注意如果 是web项目会保存到Tomcat的bin目录 下 -->
+        <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/archive/error//%d.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- 当天的日志大小 超过${log.max.size}时,压缩日志并保存
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log.max.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            -->
+        </rollingPolicy>
+        <!-- 日志输出的文件的格式
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</pattern>
+        </layout>
+        -->
+    </appender>
+
+    <!--1、root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性。
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，不能设置为INHERITED或者同义词NULL。
+        默认是DEBUG。
+        可以包含零个或多个元素，标识这个appender将会添加到这个loger。
+    -->
+    <root level="DEBUG">
+        <appender-ref ref="INFO-LOG" /> <!-- 标识这个appender将会添加到这个logger -->
+        <appender-ref ref="ERROR-LOG" />
+        <appender-ref ref="CONSOLE-LOG" />
+    </root>
+
+    <!-- 5、   用来设置某一个包或者具体的某一个类的日志打印级别、以及指定 <appender> 。 <loger> 仅有一个 name 属性，一个可选的 level 和一个可选的 addtivity 属性。
+       name :用来指定受此loger约束的某一个包或者具体的某一个类。
+       level :用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+       如果未设置此属性，那么当前loger将会继承上级的级别。
+       addtivity :是否向上级loger传递打印信息。默认是true。
+       loger在实际使用的时候有两种情况-->
+     <!--logback为java中的包-->
+    <logger name="com.webservice.dao" level="debug" additivity="false">
+        <appender-ref ref="file"/>
+    </logger>
+
+</configuration>

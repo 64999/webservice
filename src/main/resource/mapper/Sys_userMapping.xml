@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webservice.dao.SysUserDao" >
+    <resultMap id="sysuserMap" type="Sysuser">
+        <result column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+    </resultMap>
+    <select id="findAll" parameterType="String" resultMap="sysuserMap">
+        SELECT * FROM sys_user WHERE username = #{username}
+    </select>
+    <select id="validate" parameterType="String" resultMap="sysuserMap">
+        SELECT password FROM sys_user WHERE username = #{username}
+    </select>
+
+</mapper>
